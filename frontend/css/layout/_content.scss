@@ -111,6 +111,17 @@
   flex: 1;
 }
 
+@include media-breakpoint-down(md) {
+  .main-content-container {
+    flex-direction: column;
+  }
+
+  .main-content-sidebar {
+    flex-basis: 0;
+    max-width: none;
+  }
+}
+
 @include media-breakpoint-down(sm) {
   .content-header {
     padding: 10px;
@@ -121,13 +132,7 @@
   }
 
   .main-content-container {
-    flex-direction: column;
     margin-bottom: 10px;
-  }
-
-  .main-content-sidebar {
-    flex-basis: 0;
-    max-width: none;
   }
 
   .main-content,
