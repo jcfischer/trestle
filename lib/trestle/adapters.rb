@@ -7,6 +7,7 @@ module Trestle
     autoload :ActiveRecordAdapter
     autoload :DraperAdapter
     autoload :SequelAdapter
+    autoload :ActiveResourceAdapter
 
     # Creates a new Adapter class with the given modules mixed in
     def self.compose(*modules)
