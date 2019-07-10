@@ -24,6 +24,8 @@ module Trestle
 
                   select attribute.name, attribute.association_class.all, include_blank: prompt
                 end
+              when :integer
+                number_field attribute.name
               when :text
                 text_area attribute.name
               when :date
