@@ -15,7 +15,9 @@ Coveralls.wear!
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
+
 require 'rspec/rails'
+require 'ammeter/init'
 
 Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))].each { |f| require f }
 
@@ -48,9 +50,5 @@ RSpec.configure do |config|
     (Object.constants - original_constants).each do |const|
       Object.send(:remove_const, const)
     end
-  end
-
-  config.before(type: :feature) do
-    #Trestle::Engine.reloader.execute
   end
 end

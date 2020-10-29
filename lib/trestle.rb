@@ -1,46 +1,29 @@
-require "trestle/version"
+require_relative "trestle/version"
 
 require "active_support/all"
-
-require "sass-rails"
-require "autoprefixer-rails"
 require "kaminari"
 
 module Trestle
-  extend ActiveSupport::Autoload
-
-  autoload :Adapters
-  autoload :Admin
-  autoload :ApplicationController
-  autoload :Attribute
-  autoload :Breadcrumb
-  autoload :Builder
-  autoload :Configurable
-  autoload :Configuration
-  autoload :Display
-  autoload :EvaluationContext
-  autoload :Form
-  autoload :Hook
-  autoload :ModelName
-  autoload :Navigation
-  autoload :Options
-  autoload :Reloader
-  autoload :Resource
-  autoload :Scopes
-  autoload :Tab
-  autoload :Table
-  autoload :Toolbar
-
-  module Controller
-    extend ActiveSupport::Autoload
-
-    autoload :Breadcrumbs
-    autoload :Callbacks
-    autoload :Dialog
-    autoload :Helpers
-    autoload :Layout
-    autoload :Location
-  end
+  require_relative "trestle/evaluation_context"
+  require_relative "trestle/builder"
+  require_relative "trestle/hook"
+  require_relative "trestle/toolbar"
+  require_relative "trestle/adapters"
+  require_relative "trestle/attribute"
+  require_relative "trestle/breadcrumb"
+  require_relative "trestle/configurable"
+  require_relative "trestle/configuration"
+  require_relative "trestle/display"
+  require_relative "trestle/form"
+  require_relative "trestle/model_name"
+  require_relative "trestle/navigation"
+  require_relative "trestle/options"
+  require_relative "trestle/reloader"
+  require_relative "trestle/scopes"
+  require_relative "trestle/tab"
+  require_relative "trestle/table"
+  require_relative "trestle/admin"
+  require_relative "trestle/resource"
 
   mattr_accessor :admins
   self.admins = {}
@@ -74,6 +57,17 @@ module Trestle
     blocks = config.menus + admins.values.map(&:menu).compact
     Navigation.build(blocks, context)
   end
+
+  def self.i18n_fallbacks(locale=I18n.locale)
+    if I18n.respond_to?(:fallbacks)
+      I18n.fallbacks[locale]
+    elsif locale.to_s.include?("-")
+      fallback = locale.to_s.split("-").first
+      [locale, fallback]
+    else
+      [locale]
+    end
+  end
 end
 
-require "trestle/engine" if defined?(Rails)
+require_relative "trestle/engine" if defined?(Rails)

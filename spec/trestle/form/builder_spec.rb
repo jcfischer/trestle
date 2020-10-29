@@ -15,6 +15,37 @@ describe Trestle::Form::Builder, type: :helper do
 
   subject(:builder) { Trestle::Form::Builder.new(object_name, object, template, options) }
 
+  describe '#static_field' do
+    it 'renders when only a field name is provided' do
+      result = builder.static_field(:title)
+
+      expect(result).to have_tag('.form-group') do
+        with_tag "label.control-label", text: "Title", without: { class: "sr-only" }
+        with_tag "p", text: object.title
+      end
+    end
+
+    it 'renders when a value is provided' do
+      value = 'A Title'
+      result = builder.static_field(:title, value)
+
+      expect(result).to have_tag('.form-group') do
+        with_tag "label.control-label", text: "Title", without: { class: "sr-only" }
+        with_tag "p", text: value
+      end
+    end
+
+    it 'renders when a block is provided' do
+      value = 'A Title'
+      result = builder.static_field(:title) { content_tag(:span, value) }
+
+      expect(result).to have_tag('.form-group') do
+        with_tag "label.control-label", text: "Title", without: { class: "sr-only" }
+        with_tag "span", text: value
+      end
+    end
+  end
+
   describe "#text_field" do
     it "renders the field with a label within a form group" do
       result = builder.text_field(:title)
@@ -44,7 +75,7 @@ describe Trestle::Form::Builder, type: :helper do
       result = builder.text_field(:title, help: "Help message")
 
       expect(result).to have_tag('.form-group') do
-        with_tag "p.help-block", text: "Help message"
+        with_tag "p.form-text", text: "Help message"
       end
     end
 
@@ -52,7 +83,7 @@ describe Trestle::Form::Builder, type: :helper do
       result = builder.text_field(:title, help: { text: "Floating help message", float: true })
 
       expect(result).to have_tag('.form-group') do
-        with_tag "p.help-block.floating", text: "Floating help message"
+        with_tag "p.form-text.floating", text: "Floating help message"
       end
     end
 
@@ -65,7 +96,7 @@ describe Trestle::Form::Builder, type: :helper do
         result = builder.text_field(:title)
 
         expect(result).to have_tag('.form-group.has-error') do
-          with_tag "p.help-block", text: " is required" do
+          with_tag "p.invalid-feedback", text: " is required" do
             with_tag "i.fa.fa-warning"
           end
         end

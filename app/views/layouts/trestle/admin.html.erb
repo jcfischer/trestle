@@ -12,23 +12,25 @@
 
     <%= csrf_meta_tags %>
 
-    <title><%= [yield(:title), Trestle.config.site_title].join(' :: ') %></title>
+    <title><%= [title, Trestle.config.site_title].join(' :: ') %></title>
 
     <%= favicon_link_tag Trestle.config.favicon if Trestle.config.favicon %>
 
     <%= stylesheet_link_tag "trestle/admin", 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "trestle/theme", 'data-turbolinks-track': 'reload' if Trestle.config.theme %>
+    <%= stylesheet_link_tag "trestle/custom", 'data-turbolinks-track': 'reload' %>
 
     <%= hook :stylesheets %>
 
-    <%= javascript_include_tag "turbolinks" if Trestle.config.turbolinks %>
+    <%= javascript_include_tag "turbolinks" if Trestle.config.turbolinks rescue nil %>
     <%= javascript_include_tag "trestle/admin", 'data-turbolinks-track': 'reload' %>
 
     <%= javascript_tag nonce: true do %>
-      <% Trestle.config.javascript_i18n_keys.each do |key| %>
-      Trestle.i18n['<%= key %>'] = "<%= escape_javascript(t(key, default: default_translation(key))) %>";
+      <% i18n_javascript_translations.each do |key, value| %>
+      Trestle.i18n['<%= key %>'] = "<%= escape_javascript(value) %>";
       <% end %>
 
-      Trestle.localize(<%= i18n_fallbacks.map { |l| "'#{l}'" }.join(", ").html_safe %>);
+      Trestle.localize(<%= Trestle.i18n_fallbacks.map { |l| "'#{l}'" }.join(", ").html_safe %>);
     <% end %>
 
     <%= hook :javascripts %>

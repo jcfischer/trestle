@@ -7,7 +7,7 @@ module Trestle
       self.admin_class = Admin
 
       class_attribute :controller
-      self.controller = Controller
+      self.controller = -> { AdminController }
 
       delegate :helper, :before_action, :after_action, :around_action, to: :@controller
 
@@ -27,7 +27,7 @@ module Trestle
         # Define admin controller class
         # This is done using class_eval rather than Class.new so that the full
         # class name and parent chain is set when Rails' inherited hooks are called.
-        admin.class_eval("class AdminController < #{controller.name}; end")
+        admin.class_eval("class AdminController < #{controller.call.name}; end")
 
         # Set a reference on the controller class to the admin class
         controller = admin.const_get(:AdminController)
@@ -53,7 +53,11 @@ module Trestle
       end
 
       def form(options={}, &block)
-        admin.form = Form.new(options, &block)
+        if block_given?
+          admin.form = Form.new(options, &block)
+        else
+          admin.form = Form::Automatic.new(admin, options)
+        end
       end
 
       def hook(name, options={}, &block)

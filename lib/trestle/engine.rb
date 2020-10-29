@@ -1,16 +1,16 @@
+require "sprockets/railtie"
+
 module Trestle
   class Engine < ::Rails::Engine
     isolate_namespace Trestle
     self.routes.default_scope = {}
 
     # Application assets
-    config.assets.precompile << "trestle/admin.css" << "trestle/admin.js"
+    config.assets.precompile << "trestle/admin.css" << "trestle/admin.js" << "trestle/custom.css"
 
     # Vendor assets
     %w(eot svg ttf woff woff2).each do |ext|
-      config.assets.precompile << "trestle/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.#{ext}"
-      config.assets.precompile << "trestle/font-awesome/fonts/fontawesome-webfont.#{ext}"
-      config.assets.precompile << "trestle/ionicons/fonts/ionicons.#{ext}"
+      config.assets.precompile << "trestle/fa-*.#{ext}"
     end
 
     initializer "trestle.automount" do |app|
@@ -27,6 +27,14 @@ module Trestle
       end
     end
 
+    initializer "trestle.theme" do |app|
+      # Enable theme compilation
+      if Trestle.config.theme
+        app.config.assets.paths << root.join("frontend/theme").to_s
+        app.config.assets.precompile << "trestle/theme.css"
+      end
+    end
+
     initializer "trestle.turbolinks" do |app|
       # Optional turbolinks
       app.config.assets.precompile << "turbolinks.js" if Trestle.config.turbolinks
@@ -37,11 +45,7 @@ module Trestle
     end
 
     config.to_prepare do
-      if Trestle.config.reload == :always
-        Engine.reloader.execute
-      else
-        Engine.reloader.execute_if_updated
-      end
+      Engine.reloader.execute
     end
 
     def reloader

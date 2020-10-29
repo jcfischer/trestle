@@ -5,7 +5,6 @@ gemspec
 
 group :test do
   gem 'coveralls',   require: false
-  gem 'simplecov',   require: false
   gem 'guard-rspec', require: false
 
   gem 'capybara'
@@ -16,3 +15,5 @@ group :test do
 end
 
 gem 'haml'
+gem 'sassc-rails'
+gem 'sqlite3', '~> 1.4'

@@ -1,11 +1,9 @@
 module Trestle
   class Resource < Admin
-    extend ActiveSupport::Autoload
-
-    autoload :AdapterMethods
-    autoload :Builder
-    autoload :Collection
-    autoload :Controller
+    require_relative "resource/adapter_methods"
+    require_relative "resource/builder"
+    require_relative "resource/collection"
+    require_relative "resource/toolbar"
 
     include AdapterMethods
 
@@ -83,6 +81,10 @@ module Trestle
 
       def model_name
         @model_name ||= Trestle::ModelName.new(model)
+      end
+
+      def default_human_admin_name
+        model_name.plural
       end
 
       def actions

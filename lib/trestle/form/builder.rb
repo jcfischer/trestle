@@ -1,3 +1,5 @@
+require "action_view/helpers"
+
 module Trestle
   class Form
     class Builder < ActionView::Helpers::FormBuilder
@@ -48,6 +50,3 @@ module Trestle
     end
   end
 end
-
-# Load all form fields
-Trestle::Form::Fields.eager_load!

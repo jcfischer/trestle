@@ -4,7 +4,6 @@ describe Trestle::Table::ActionsColumn do
   include_context "template"
 
   let(:options) { {} }
-  let(:table) { Trestle::Table.new(admin: admin) }
   let(:admin) { double(path: "/admin", to_param: double, form: double(dialog?: false)) }
   let(:instance) { double }
 
@@ -13,11 +12,13 @@ describe Trestle::Table::ActionsColumn do
   end
 
   subject(:column) do
-    Trestle::Table::ActionsColumn.new(table, options)
+    Trestle::Table::ActionsColumn.new(options)
   end
 
   describe "#renderer" do
-    subject(:renderer) { column.renderer(template) }
+    let(:table) { Trestle::Table.new(admin: admin) }
+
+    subject(:renderer) { column.renderer(table: table, template: template) }
 
     describe "#header" do
       it "is empty by default" do
@@ -56,8 +57,6 @@ describe Trestle::Table::ActionsColumn do
     describe "#content" do
       let(:admin) { double(actions: [:destroy]) }
 
-      let(:button) { double }
-
       it "renders the actions block" do
         expect(template).to receive(:render_toolbar).with(column.toolbar, instance, admin)
 
@@ -68,8 +67,6 @@ describe Trestle::Table::ActionsColumn do
 
   describe Trestle::Table::ActionsColumn::ActionsBuilder do
     subject(:builder) { Trestle::Table::ActionsColumn::ActionsBuilder.new(template, instance, admin) }
-
-    let(:button) { double }
 
     it "has a list of registered builder methods" do
       expect(builder.builder_methods).to include(:button, :link, :show, :edit, :delete)

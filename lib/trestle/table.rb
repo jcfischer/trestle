@@ -1,20 +1,25 @@
 module Trestle
   class Table
-    extend ActiveSupport::Autoload
+    require_relative "table/automatic"
+    require_relative "table/builder"
+    require_relative "table/column"
+    require_relative "table/actions_column"
+    require_relative "table/select_column"
+    require_relative "table/row"
 
-    autoload :Automatic
-    autoload :Builder
-    autoload :Column
-    autoload :ActionsColumn
-    autoload :SelectColumn
-    autoload :Row
-
-    attr_reader :columns, :options
+    attr_reader :columns
     attr_writer :row
+    attr_accessor :options
 
     def initialize(options={})
       @options = options
       @columns = []
+    end
+
+    def with_options(opts={})
+      dup.tap do |table|
+        table.options = options.merge(opts)
+      end
     end
 
     def admin
@@ -38,7 +43,7 @@ module Trestle
     end
 
     def row
-      @row || Row.new(self)
+      @row || Row.new
     end
 
     class Renderer
@@ -49,7 +54,7 @@ module Trestle
       end
 
       def row
-        @row ||= @table.row.renderer(@template)
+        @row ||= @table.row.renderer(table: @table, template: @template)
       end
 
       def columns

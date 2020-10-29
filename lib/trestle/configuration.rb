@@ -22,6 +22,9 @@ module Trestle
     # Default timestamp precision
     option :timestamp_precision, :minutes
 
+    # Theme stylesheet compilation (requires Sass support)
+    option :theme, defined?(Sass) || defined?(SassC)
+
 
     ## Mounting Options
 
@@ -38,7 +41,7 @@ module Trestle
     option :root, -> { Trestle.config.path }
 
     # Initial breadcrumbs to display in the breadcrumb trail
-    option :root_breadcrumbs, -> { [Trestle::Breadcrumb.new(I18n.t("admin.breadcrumbs.home", default: "Home"), Trestle.config.root)] }
+    option :root_breadcrumbs, -> { [Trestle::Breadcrumb.new(I18n.t(:"admin.breadcrumbs.home", default: "Home"), Trestle.config.root)] }
 
     # Default icon class to use when it is not explicitly provided
     option :default_navigation_icon, "fa fa-arrow-circle-o-right"
@@ -102,8 +105,8 @@ module Trestle
       -> { ActiveSupport::Dependencies.autoload_paths.grep(/\/app\/admin\Z/) }
     ]
 
-    # When to reload Trestle admin within a to_prepare block (`:always` or `:on_update`)
-    option :reload, :on_update
+    # [DEPRECATED] When to reload Trestle admin within a to_prepare block
+    deprecated_option :reload, "The config.reload option is deprecated. Admins are now always reloaded when config.to_prepare is called."
 
 
     ## Debugging

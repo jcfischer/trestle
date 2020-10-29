@@ -55,6 +55,10 @@ module Trestle
         Badge.new(options[:badge]) if badge?
       end
 
+      def html_options
+        options.except(:admin, :badge, :group, :icon, :if, :label, :priority, :unless)
+      end
+
       def visible?(context)
         if options[:if]
           context.instance_exec(&options[:if])
@@ -79,7 +83,7 @@ module Trestle
         end
 
         def html_class
-          @html_class || "label-primary"
+          @html_class || "badge-primary"
         end
       end
     end
